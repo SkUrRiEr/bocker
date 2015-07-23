@@ -41,8 +41,7 @@ for ps in "$btrfs_path"/ps_*; do
 done
 }
 function bocker_run() { #HELP Create a container:\nBOCKER run <image_id> <command>
-bocker_check 'img' "$1"
-cmd=${@:2}
+bocker_check 'img' $1
 uuid="ps_$(shuf -i 10000-99999 -n 1)"
 ip link add dev veth0_"$uuid" type veth peer name veth1_"$uuid"
 ip link set dev veth0_"$uuid" up
@@ -55,9 +54,9 @@ ip netns exec netns_"$uuid" ip link set dev veth1_"$uuid" up
 ip netns exec netns_"$uuid" ip route add default via 10.0.0.1
 btrfs subvolume snapshot "$btrfs_path/$1" "$btrfs_path/$uuid" > /dev/null
 echo 'nameserver 8.8.8.8' > "$btrfs_path/$uuid"/etc/resolv.conf
-echo "$cmd" > "$btrfs_path/$uuid/$uuid.cmd"
+echo "${*:2}" > "$btrfs_path/$uuid/$uuid.cmd"
 ip netns exec netns_"$uuid" "unshare" -fp --mount-proc "chroot" \
-	"$btrfs_path/$uuid" /bin/sh -c "/bin/mount -t proc proc /proc && $cmd" \
+	"$btrfs_path/$uuid" /bin/sh -c "/bin/mount -t proc proc /proc && ${*:2}" \
 	2>&1 | tee "$btrfs_path/$uuid/$uuid.log" || true
 ip link del dev veth0_"$uuid"
 ip netns del netns_"$uuid"
