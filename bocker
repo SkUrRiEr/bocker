@@ -66,7 +66,7 @@ bocker_check 'ps' "$1"
 cat "$btrfs_path/$1/$1.log"
 }
 function bocker_commit() { #HELP Commit a container to the image:\nBOCKER commit <container_id> <image_id>
-bocker_check 'ps' "$1" && bocker_check 'img' "$2" && RM "$2"
+bocker_check 'ps' "$1" && bocker_check 'img' "$2" && bocker_rm "$2"
 btrfs subvolume snapshot "$btrfs_path/$1" "$btrfs_path/$2" > /dev/null
 echo "Created: $2"
 }
