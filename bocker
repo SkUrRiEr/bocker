@@ -75,6 +75,6 @@ sed -n "s/^.*#HELP\\s//p;" < $1 | sed "s/\\\\n/\n\t/g;s/$/\n/;s!BOCKER!${1/!/\\!
 }
 [[ -z "${1-}" ]] && bocker_help $0 && exit 0
 case $1 in
-	init|rm|images|ps|run|logs|commit) bocker_$1 "${@:2}" ;;
+	init|rm|images|ps|run|logs|commit) bocker_"$1" "${@:2}" ;;
 	*) bocker_help $0 ;;
 esac
